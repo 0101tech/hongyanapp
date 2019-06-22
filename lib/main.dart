@@ -46,7 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       body: WebView(
-        initialUrl: 'http://hongyan.0101.tech',
+        initialUrl: 'https://hongyan.0101.tech',
         javascriptMode: JavascriptMode.unrestricted,
       ),
     );
