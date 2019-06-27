@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:io';
+
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 void main() {
   runApp(MyApp());
@@ -36,19 +37,40 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  WebViewController _controller;
+  String _url = 'http://47.92.146.72/';
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(0),
-        child: Container(
-          height: MediaQuery.of(context).padding.top,
+    return WillPopScope(
+      child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(0),
+          child: Container(
+            height: MediaQuery.of(context).padding.top,
+          ),
+        ),
+        body: WebView(
+          onWebViewCreated: (WebViewController webViewController) {
+            _controller = webViewController;
+          },
+          initialUrl: _url,
+          javascriptMode: JavascriptMode.unrestricted,
         ),
       ),
-      body: WebView(
-        initialUrl: 'https://hongyan.0101.tech',
-        javascriptMode: JavascriptMode.unrestricted,
-      ),
+      onWillPop: _back,
     );
+  }
+
+  Future<bool> _back() async {
+    if (_controller != null) {
+      String currentUrl = await _controller.currentUrl();
+      if (_url == currentUrl) {
+        return new Future.value(true);
+      } else {
+        _controller.goBack();
+      }
+    }
+    return new Future.value(false);
   }
 }
